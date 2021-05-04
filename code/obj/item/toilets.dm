@@ -32,12 +32,37 @@ TOILET
 		return
 	if (istype(W, /obj/item/storage))
 		return
-	if (istype(W, /obj/item/grab))
-		playsound(get_turf(src), "sound/effects/toilet_flush.ogg", 50, 1)
-		user.visible_message("<span class='notice'>[user] gives [W:affecting] a swirlie!</span>", "<span class='notice'>You give [W:affecting] a swirlie. It's like Middle School all over again!</span>")
+	if (!istype(W, /obj/item/grab))
+		return ..()
+
+	var/obj/item/grab/GRAB = W
+
+	if (!ismob(GRAB.affecting) || !istype(GRAB.affecting, /mob/living/carbon))
+		return ..()
+
+	var/mob/M = GRAB.affecting
+	var/mob/A = GRAB.assailant
+
+	playsound(get_turf(src), "sound/effects/toilet_flush.ogg", 50, 1)
+
+	if (GRAB.state > 2 || M.a_intent == INTENT_HARM)
+		// If it's a choke grip or they've set the intent to harm
+		// we really mean business with this toilet
+		user.lastattacked = src
+		user.visible_message(
+			"<span class='notice'>[user] shoves [W:affecting] under the water and gives them an atomic swirlie!</span>",
+			"<span class='notice'>You shove [W:affecting] under the water and give them an atomic swirlie. Splish splash!</span>"
+		)
+		logTheThing("combat", A, M, "gives [constructTarget(M,"combat")] an atomic swirlie at [log_loc(src)].")
+
+		M.emote("gurgle")
+
+		changeStatus("weakened", 2 SECONDS)
+		M.losebreath += 3
+
 		return
 
-	return ..()
+	user.visible_message("<span class='notice'>[user] gives [W:affecting] a swirlie!</span>", "<span class='notice'>You give [W:affecting] a swirlie. It's like Middle School all over again!</span>")
 
 /obj/item/storage/toilet/MouseDrop(atom/over_object, src_location, over_location)
 	if (usr && over_object == usr && in_interact_range(src, usr) && iscarbon(usr) && !usr.stat)
