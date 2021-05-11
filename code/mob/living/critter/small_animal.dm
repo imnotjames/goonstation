@@ -2490,6 +2490,7 @@ var/list/mob_bird_species = list("smallowl" = /mob/living/critter/small_animal/b
 		src.setup_overlays()*/
 		src.real_name = "[pick_string("mentor_mice_prefixes.txt", "mentor_mouse_prefix")] [src.name]"
 		src.name = src.real_name
+		src.AddComponent(/datum/component/death_confetti, "mentor")
 
 	setup_overlays()
 		if(!src.colorkey_overlays)

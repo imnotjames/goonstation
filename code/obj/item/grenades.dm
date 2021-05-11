@@ -1529,7 +1529,7 @@ PIPE BOMBS + CONSTRUCTION
 						ass_explosion(M, 0, 5)
 			if (confetti)
 				if (confetti > 1)
-					particleMaster.SpawnSystem(new /datum/particleSystem/confetti_more(src.loc))
+					particleMaster.SpawnSystem(new /datum/particleSystem/confetti/more(src.loc))
 				else
 					particleMaster.SpawnSystem(new /datum/particleSystem/confetti(src.loc))
 			if (meat)

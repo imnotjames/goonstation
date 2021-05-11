@@ -471,6 +471,27 @@ var/matrix/MS0101 = matrix(0.1, 0, 0, 0, 0.1, 0)
 
 			MatrixInit()
 
+/datum/particleType/confetti_question
+	name = "confetti_question"
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "question"
+
+	MatrixInit()
+		first = matrix()
+		second = matrix()
+
+	Apply(var/obj/particle/par)
+		if(..())
+			first.Turn(rand(-90, 90))
+			first.Scale(0.5,0.5)
+			second.Turn(rand(-90, 90))
+
+			if(!istype(par)) return
+			animate(par, transform = first, time = 4, pixel_y = rand(-32, 32) + par.pixel_y, pixel_x = rand(-32, 32) + par.pixel_x, easing = LINEAR_EASING)
+			animate(transform = second, time = 5, alpha = 0, pixel_y = par.pixel_y - 5, easing = LINEAR_EASING|EASE_OUT)
+
+			MatrixInit()
+
 /datum/particleType/gravaccel
 	name = "gravaccel"
 	icon = 'icons/effects/effects.dmi'
@@ -1226,24 +1247,28 @@ var/matrix/MS0101 = matrix(0.1, 0, 0, 0, 0.1, 0)
 			Die()
 
 /datum/particleSystem/confetti
-	New(var/atom/location = null)
-		..(location, "confetti", 35)
+	var/amount = 40
+
+	New(var/atom/location = null, var/particleType = "confetti", var/amount = 40)
+		..(location, particleType, 35)
+
+		src.amount = amount
 
 	Run()
 		if (..())
-			for(var/i=0, i<rand(40,50), i++)
+			var/amount = rand(src.amount * 0.9, src.amount * 1.1)
+
+			for(var/i=0, i<amount, i++)
 				SpawnParticle()
 			Die()
 
-/datum/particleSystem/confetti_more
+/datum/particleSystem/confetti/question
 	New(var/atom/location = null)
-		..(location, "confetti", 35)
+		..(location, "confetti_question", 10)
 
-	Run()
-		if (..())
-			for(var/i=0, i<rand(60,80), i++)
-				SpawnParticle()
-			Die()
+/datum/particleSystem/confetti/more
+	New(var/atom/location = null)
+		..(location,70)
 
 /datum/particleSystem/explosion
 	New(var/atom/location = null)
