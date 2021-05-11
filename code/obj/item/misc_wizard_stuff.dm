@@ -176,17 +176,14 @@
 		. = ..()
 		STOP_TRACKING
 
-	attack_hand(var/mob/user as mob)
-		if (user.mind)
-			if (iswizard(user) || check_target_immunity(user))
-				if (user.mind.key != src.wizard_key && !check_target_immunity(user))
-					boutput(user, "<span class='alert'>The [src.name] is magically attuned to another wizard! You can use it, but the staff will refuse your attempts to control or summon it.</span>")
-				..()
-				return
-			else
-				src.do_brainmelt(user, 2)
-				return
-		else ..()
+	pickup(var/mob/user as mob)
+		..()
+
+		if (iswizard(user) || check_target_immunity(user))
+			if (user?.mind.key != src.wizard_key && !check_target_immunity(user))
+				boutput(user, "<span class='alert'>The [src.name] is magically attuned to another wizard! You can use it, but the staff will refuse your attempts to control or summon it.</span>")
+		else
+			src.do_brainmelt(user, 2)
 
 	attack(mob/M as mob, mob/user as mob)
 		if (iswizard(user) && !iswizard(M) && !isdead(M) && !check_target_immunity(M))
