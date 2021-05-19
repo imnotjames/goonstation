@@ -18,9 +18,9 @@
 			if (get_dist(holder.owner, target) > 1)
 				boutput(holder.owner, __red("We cannot reach that target with our stinger."))
 				return 1
-			if (target.reagents.total_volume >= target.reagents.maximum_volume)
-				boutput(holder.owner, "<span class='alert'>[target] is full.</span>")
-				return 1
+			if (target.reagents.total_volume + inject_amount > target.reagents.maximum_volume)
+				target.reagents.remove_any(inject_amount - (target.reagents.maximum_volume - target.reagents.total_volumeinject_amount))
+
 			if (istype(target,/obj/item/reagent_containers/patch))
 				var/obj/item/reagent_containers/patch/P = target
 				if (P.medical)
